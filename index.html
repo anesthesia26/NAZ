@@ -32,10 +32,10 @@
         </div>
         <form id="loginForm">
             <div class="form-group">
-                <label>البريد الإلكتروني</label>
+                <label>اسم المستخدم (Key)</label>
                 <div class="input-wrapper">
-                    <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني" required>
-                    <i class="fa-regular fa-envelope"></i>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم مثل: ko" required>
+                    <i class="fa-regular fa-user"></i>
                 </div>
             </div>
             <div class="form-group">
@@ -55,34 +55,43 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Integration -->
+    <!-- Firebase Realtime Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCtJY8Qd_wiXqMCaYIoitiWY9_deYwEW2o",
-            authDomain: "nazq-b8c70.firebaseapp.com",
-            projectId: "nazq-b8c70",
-            storageBucket: "nazq-b8c70.firebasestorage.app",
-            messagingSenderId: "532148139006",
-            appId: "1:532148139006:web:ed22524754bc0cc7db86af",
-            measurementId: "G-1ERJL6JLPW"
+            databaseURL: "https://astra-8d43c-default-rtdb.firebaseio.com",
+            projectId: "nazq-b8c70"
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+        const db = getDatabase(app);
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
 
+            const dbRef = ref(db);
             try {
-                await signInWithEmailAndPassword(auth, email, password);
-                window.location.href = "dashboard.html";
+                // البحث داخل جدول users في قاعدة البيانات حسب المفتاح (مثل ko)
+                const snapshot = await get(child(dbRef, `users/${username}`));
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    // التحقق من كلمة المرور (pass)
+                    if (userData.pass === password) {
+                        alert('تم تسجيل الدخول بنجاح، أهلاً بك ' + (userData.name || username));
+                        window.location.href = "dashboard.html";
+                    } else {
+                        alert('كلمة المرور غير صحيحة!');
+                    }
+                } else {
+                    alert('اسم المستخدم غير موجود!');
+                }
             } catch (error) {
-                alert('خطأ في تسجيل الدخول: تأكد من صحة البريد أو كلمة المرور');
+                alert('حدث خطأ في الاتصال بقاعدة البيانات: ' + error.message);
             }
         });
     </script>
