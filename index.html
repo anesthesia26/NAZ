@@ -21,11 +21,7 @@
         .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; }
         .submit-btn { background-color: #0b4f3b; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
         .submit-btn:hover { background-color: #093c2e; }
-        .footer-links { margin-top: 25px; font-size: 14px; }
-        .footer-links a { color: #0b4f3b; text-decoration: none; font-weight: 600; }
-        .footer-links a:hover { text-decoration: underline; }
-        .footer-text { color: #777; }
-        .developer-footer { text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6; }
+        .developer-footer { text-align: center; margin-top: 35px; font-size: 11px; color: #888; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -54,10 +50,6 @@
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
         </form>
-        <div class="footer-links">
-            <span class="footer-text">ليس لديك حساب؟ </span>
-            <a href="#">إنشاء حساب جديد</a>
-        </div>
         <div class="developer-footer">
             By:Komail Nabeel / B.M.T Of Anesthesia & ICU / WBD
         </div>
@@ -88,11 +80,9 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                alert('تم تسجيل الدخول بنجاح عبر Firebase!');
-                // الانتقال المباشر للوحة التحكم في غيت هوب بيجيز
                 window.location.href = "dashboard.html";
             } catch (error) {
-                alert('خطأ في تسجيل الدخول: ' + error.message);
+                alert('خطأ في تسجيل الدخول: تأكد من صحة البريد أو كلمة المرور');
             }
         });
     </script>
