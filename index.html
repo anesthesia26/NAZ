@@ -32,9 +32,9 @@
         </div>
         <form id="loginForm">
             <div class="form-group">
-                <label>اسم المستخدم (Key)</label>
+                <label>اسم المستخدم</label>
                 <div class="input-wrapper">
-                    <input type="text" id="username" placeholder="أدخل اسم المستخدم مثل: ko" required>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم" required>
                     <i class="fa-regular fa-user"></i>
                 </div>
             </div>
@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <!-- Firebase Realtime Database Integration -->
+    <!-- Firebase Realtime Database Login Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -76,22 +76,23 @@
 
             const dbRef = ref(db);
             try {
-                // البحث داخل جدول users في قاعدة البيانات حسب المفتاح (مثل ko)
                 const snapshot = await get(child(dbRef, `users/${username}`));
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    // التحقق من كلمة المرور (pass)
                     if (userData.pass === password) {
-                        alert('تم تسجيل الدخول بنجاح، أهلاً بك ' + (userData.name || username));
+                        // حفظ اسم المستخدم وصلاحيته محلياً في المتصفح لنقله للوحة التحكم
+                        localStorage.setItem("naz_user", username);
+                        localStorage.setItem("naz_role", userData.role || "client");
+                        
                         window.location.href = "dashboard.html";
                     } else {
                         alert('كلمة المرور غير صحيحة!');
                     }
                 } else {
-                    alert('اسم المستخدم غير موجود!');
+                    alert('اسم المستخدم غير مسجل!');
                 }
             } catch (error) {
-                alert('حدث خطأ في الاتصال بقاعدة البيانات: ' + error.message);
+                alert('خطأ في الاتصال بقاعدة البيانات: ' + error.message);
             }
         });
     </script>
